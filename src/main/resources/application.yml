@@ -15,6 +15,10 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
     time-zone: UTC
+  security:
+    user:
+      name: houlx
+      password: 123
 
 logging:
   level:

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
 import lombok.Data;
@@ -19,6 +20,7 @@ import lombok.Data;
 @Entity
 @Table(name = "roles")
 @Data
+@NoArgsConstructor
 public class Role {
 
     @Id
