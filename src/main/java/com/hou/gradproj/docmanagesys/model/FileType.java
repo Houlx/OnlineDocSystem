@@ -1,6 +1,7 @@
 package com.hou.gradproj.docmanagesys.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "file_types")
 @Data
+@NoArgsConstructor
 public class FileType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,5 +18,9 @@ public class FileType {
     @Enumerated(EnumType.STRING)
     @NaturalId
     @Column(length = 30)
-    private final FileTypeName name;
+    private FileTypeName name;
+
+    public FileType(FileTypeName name) {
+        this.name = name;
+    }
 }

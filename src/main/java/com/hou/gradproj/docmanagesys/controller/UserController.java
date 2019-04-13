@@ -29,6 +29,7 @@ public class UserController {
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
+        logger.info(currentUser.toString());
         return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
     }
 
