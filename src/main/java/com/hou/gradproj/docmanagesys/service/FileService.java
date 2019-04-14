@@ -1,6 +1,7 @@
 package com.hou.gradproj.docmanagesys.service;
 
 import com.hou.gradproj.docmanagesys.exception.BadRequestException;
+import com.hou.gradproj.docmanagesys.exception.FileException;
 import com.hou.gradproj.docmanagesys.exception.ResourceNotFoundException;
 import com.hou.gradproj.docmanagesys.model.File;
 import com.hou.gradproj.docmanagesys.model.FileType;
@@ -17,11 +18,12 @@ import com.hou.gradproj.docmanagesys.util.FileUtil;
 import com.hou.gradproj.docmanagesys.util.ModelMapper;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +37,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
@@ -111,19 +117,19 @@ public class FileService {
         if (!dest.exists()) {
             dest.mkdirs();
         }
-        String path = dirPath + "/" + multipartFile.getOriginalFilename();
-        multipartFile.transferTo(new java.io.File(path));
+        String path = dirPath + "/" + name;
 
-        file.setName(name);
-        file.setSize(size);
-        file.setType(type);
-        file.setPath(path);
-
-        logger.info(file.toString());
-
-        fileRepository.save(file);
-
-        return file;
+        if (!fileRepository.existsByNameAndCreatedBy(name, currentUser.getId())) {
+            multipartFile.transferTo(new java.io.File(path));
+            file.setName(name);
+            file.setSize(size);
+            file.setType(type);
+            file.setPath(path);
+            fileRepository.save(file);
+            return file;
+        } else {
+            throw new FileException("File already exists");
+        }
     }
 
     public FileResponse deleteFile(Long id) {
@@ -145,26 +151,17 @@ public class FileService {
         return null;
     }
 
-    @SneakyThrows({FileNotFoundException.class, IOException.class})
-    public void downloadFile(Long id, HttpServletRequest request, HttpServletResponse response) {
-        response.setCharacterEncoding(request.getCharacterEncoding());
-        response.setContentType("application/x-download");
-
+    @SneakyThrows(MalformedURLException.class)
+    public Resource loadFileAsResource(Long id) {
         File downloadFile = fileRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("File", "id", id));
-        User owner = userRepository.findById(downloadFile.getCreatedBy()).orElseThrow(() ->
-                new ResourceNotFoundException("User", "id", downloadFile.getCreatedBy()));
 
-        java.io.File file = new java.io.File(downloadFile.getPath());
-        @Cleanup FileInputStream inputStream = new FileInputStream(file);
-
-        response.addHeader("Content-Disposition", "attachment;filename=" + file.getName());
-        IOUtils.copy(inputStream, response.getOutputStream());
-        response.flushBuffer();
-
-        FileResponse fileResponse = ModelMapper.mapFileToFileResponse(downloadFile);
-        fileResponse.setCreatedBy(new UserSummary(owner.getId(), owner.getUsername(), owner.getName()));
-
-//        return fileResponse;
+        Path filePath = Paths.get(downloadFile.getPath()).toAbsolutePath().normalize();
+//        logger.warn(filePath.toUri().toString());
+        Resource resource = new UrlResource(filePath.toUri());
+        if (resource.exists()) {
+            return resource;
+        }
+        return null;
     }
 
     private void validatePageNumberAndSize(int page, int size) {

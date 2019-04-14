@@ -17,7 +17,7 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 public class DocumentManagementApplication {
     @PostConstruct
     void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT+08:00"));
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8:00"));
     }
 
     public static void main(String[] args) {
