@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/**/*.js").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability").permitAll()
-                .antMatchers(HttpMethod.GET, /*"/api/files/**",*/ "/api/users/**").permitAll()//TODO this line may should be deleted
+                .antMatchers(HttpMethod.GET, "/resource/**", "/api/users/**").permitAll()//TODO this line may should be deleted
                 .anyRequest().authenticated();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }

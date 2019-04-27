@@ -1,6 +1,7 @@
 package com.hou.gradproj.docmanagesys.repository;
 
 import com.hou.gradproj.docmanagesys.model.File;
+import com.hou.gradproj.docmanagesys.model.FileType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
     List<File> findByIdIn(List<Long> ids);
 
     boolean existsByNameAndCreatedBy(String name, Long id);
+
+    Page<File> findByCreatedByAndType(Long userId, FileType type, Pageable pageable);
 }

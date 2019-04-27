@@ -1,8 +1,8 @@
 package com.hou.gradproj.docmanagesys.controller;
 
 import com.hou.gradproj.docmanagesys.exception.BadRequestException;
+import com.hou.gradproj.docmanagesys.exception.ResourceNotFoundException;
 import com.hou.gradproj.docmanagesys.model.File;
-import com.hou.gradproj.docmanagesys.payload.ApiResponse;
 import com.hou.gradproj.docmanagesys.payload.FileResponse;
 import com.hou.gradproj.docmanagesys.payload.PagedResponse;
 import com.hou.gradproj.docmanagesys.payload.UserSummary;
@@ -14,9 +14,11 @@ import com.hou.gradproj.docmanagesys.security.UserPrincipal;
 import com.hou.gradproj.docmanagesys.service.FileService;
 import com.hou.gradproj.docmanagesys.util.AppConstants;
 import com.hou.gradproj.docmanagesys.util.ModelMapper;
+import com.hou.gradproj.docmanagesys.util.OfficeFileConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
@@ -39,6 +40,9 @@ public class FileController {
     private final FileTypeRepository fileTypeRepository;
 
     private final FileService fileService;
+
+//    @Value("${app.preview-server}")
+//    private String PREVIEW_SERVER;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileController.class);
 
@@ -57,6 +61,16 @@ public class FileController {
                                                 @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size) {
         return fileService.getFiles(currentUser, page, size);
     }
+
+    @GetMapping("/{typeId}")
+    @PreAuthorize("hasRole('USER')")
+    public PagedResponse<FileResponse> getFilesByType(@CurrentUser UserPrincipal currentUser,
+                                                      @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+                                                      @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size,
+                                                      @PathVariable Long typeId) {
+        return fileService.getFiles(currentUser, page, size, typeId);
+    }
+
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
@@ -83,6 +97,28 @@ public class FileController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId, HttpServletRequest request) {
         Resource resource = fileService.loadFileAsResource(fileId);
+        return getResponseEntity(resource, request, "application/octet-stream");
+    }
+
+    @PostMapping("/{fileId}")
+    @PreAuthorize("hasRole('USER')")
+    public String rename(@PathVariable Long fileId, @RequestParam("newName") String newName) {
+        if (fileService.rename(fileId, newName)) {
+            return "SUCCESS";
+        }
+        return "FAILED";
+    }
+
+    //obsolete
+    @GetMapping("/preview/{fileId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Resource> preview(@PathVariable Long fileId, HttpServletRequest request) {
+        Resource resource = fileService.handlePreview(fileId);
+
+        return getResponseEntity(resource, request, "text/html");
+    }
+
+    private ResponseEntity<Resource> getResponseEntity(Resource resource, HttpServletRequest request, String defaultContentType) {
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
@@ -90,11 +126,13 @@ public class FileController {
             e.printStackTrace();
         }
         if (contentType == null) {
-            contentType = "application/octet-stream";
+            contentType = defaultContentType;
         }
-
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION
+                        , "attachment;filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
 }
