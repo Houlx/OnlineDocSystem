@@ -105,6 +105,11 @@
             <optional>true</optional>
             <scope>true</scope>
         </dependency>
+        <dependency>
+            <groupId>net.arccode</groupId>
+            <artifactId>fastdfs-client-java</artifactId>
+            <version>1.27.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
