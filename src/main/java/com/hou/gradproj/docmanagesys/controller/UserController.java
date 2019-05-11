@@ -44,12 +44,4 @@ public class UserController {
         Boolean isAvailable = !userRepository.existsByEmail(email);
         return new UserIdentityAvailability(isAvailable);
     }
-
-    @GetMapping("/users/{username}")
-    public UserProfile getUserProfile(@PathVariable(value = "username") String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-
-        return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getStorageRoom(), user.getAlreadyUsedRoom(), user.getCreatedAt());
-    }
 }

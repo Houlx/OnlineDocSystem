@@ -23,4 +23,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
     boolean existsByNameAndCreatedBy(String name, Long id);
 
     Page<File> findByCreatedByAndType(Long userId, FileType type, Pageable pageable);
+
+    void deleteByCreatedBy(Long id);
 }

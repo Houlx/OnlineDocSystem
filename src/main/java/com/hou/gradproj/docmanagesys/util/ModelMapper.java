@@ -1,7 +1,9 @@
 package com.hou.gradproj.docmanagesys.util;
 
 import com.hou.gradproj.docmanagesys.model.File;
+import com.hou.gradproj.docmanagesys.model.User;
 import com.hou.gradproj.docmanagesys.payload.FileResponse;
+import com.hou.gradproj.docmanagesys.payload.UserProfile;
 
 public class ModelMapper {
 
@@ -17,5 +19,16 @@ public class ModelMapper {
         response.setUpdatedAt(file.getUpdatedAt());
 
         return response;
+    }
+
+    public static UserProfile mapUserToUserProfile(User user) {
+        return new UserProfile(
+                user.getId(),
+                user.getUsername(),
+                user.getName(),
+                user.getStorageRoom(),
+                user.getAlreadyUsedRoom(),
+                user.getCreatedAt()
+        );
     }
 }
