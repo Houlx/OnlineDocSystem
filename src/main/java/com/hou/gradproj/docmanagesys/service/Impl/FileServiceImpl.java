@@ -54,6 +54,15 @@ public class FileServiceImpl implements FileService {
         this.fileTypeRepository = fileTypeRepository;
     }
 
+    /**
+     * get files owned by one user by typeId, default is 0(all files)
+     *
+     * @param currentUser file owner
+     * @param page        page index
+     * @param size        size number
+     * @param typeId      id of type
+     * @return files in page
+     */
     @Override
     @Transactional
     public Page<File> getFiles(UserPrincipal currentUser, int page, int size, Long typeId) {
@@ -118,6 +127,12 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    /**
+     * handle delete file
+     *
+     * @param id file id
+     * @return file entity with info
+     */
     @Override
     @Transactional
     public File deleteFile(Long id) {
@@ -139,6 +154,12 @@ public class FileServiceImpl implements FileService {
         return null;
     }
 
+    /**
+     * load file from storage into a Resource object
+     *
+     * @param id file id
+     * @return Resource containing file
+     */
     @Override
     @Transactional
     @SneakyThrows(MalformedURLException.class)
@@ -153,6 +174,13 @@ public class FileServiceImpl implements FileService {
         return null;
     }
 
+    /**
+     * rename file
+     *
+     * @param id      file id
+     * @param newName file's new name
+     * @return true if rename successfully, otherwise false
+     */
     @Override
     @Transactional
     public boolean rename(Long id, String newName) {
@@ -169,6 +197,13 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    /**
+     * validate page number and size, page number cannot be less than 0, size number cannot be more
+     * than max page size defined in AppConstants
+     *
+     * @param page page number
+     * @param size size number
+     */
     private void validatePageNumberAndSize(int page, int size) {
         if (page < 0) {
             throw new BadRequestException("Page number cannot be less than zero.");
