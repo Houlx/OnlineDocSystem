@@ -26,8 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.Collections;
+
+import static com.hou.gradproj.docmanagesys.util.AppConstants.DEFAULT_STORAGE_ROOM;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -80,7 +83,7 @@ public class AuthController {
             return new ResponseEntity<>(new ApiResponse(false, "Email is already in use!"), HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword());
+        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword(), DEFAULT_STORAGE_ROOM, BigInteger.valueOf(0));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set."));

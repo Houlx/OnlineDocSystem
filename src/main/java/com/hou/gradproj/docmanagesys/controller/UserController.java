@@ -30,7 +30,7 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         logger.info(currentUser.toString());
-        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
+        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName(), currentUser.getStorageRoom(), currentUser.getAlreadyUsedRoom());
     }
 
     @GetMapping("/user/checkUsernameAvailability")
@@ -50,6 +50,6 @@ public class UserController {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-        return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt());
+        return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getStorageRoom(), user.getAlreadyUsedRoom(), user.getCreatedAt());
     }
 }

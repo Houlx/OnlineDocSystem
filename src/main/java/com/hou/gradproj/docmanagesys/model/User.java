@@ -1,5 +1,6 @@
 package com.hou.gradproj.docmanagesys.model;
 
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,14 +61,22 @@ public class User extends DateAudit {
     @Size(max = 100)
     private String password;
 
+    @NotBlank
+    private BigInteger storageRoom;
+
+    @NotBlank
+    private BigInteger alreadyUsedRoom;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User(String name, String username, String email, String password) {
+    public User(String name, String username, String email, String password, BigInteger storageRoom, BigInteger alreadyUsedRoom) {
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.storageRoom = storageRoom;
+        this.alreadyUsedRoom = alreadyUsedRoom;
     }
 }
