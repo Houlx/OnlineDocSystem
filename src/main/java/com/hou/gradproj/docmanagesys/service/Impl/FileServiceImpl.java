@@ -1,6 +1,5 @@
 package com.hou.gradproj.docmanagesys.service.Impl;
 
-import com.hou.gradproj.docmanagesys.exception.BadRequestException;
 import com.hou.gradproj.docmanagesys.exception.FileException;
 import com.hou.gradproj.docmanagesys.exception.ResourceNotFoundException;
 import com.hou.gradproj.docmanagesys.model.File;
@@ -11,7 +10,6 @@ import com.hou.gradproj.docmanagesys.repository.FileTypeRepository;
 import com.hou.gradproj.docmanagesys.repository.UserRepository;
 import com.hou.gradproj.docmanagesys.security.UserPrincipal;
 import com.hou.gradproj.docmanagesys.service.FileService;
-import com.hou.gradproj.docmanagesys.util.AppConstants;
 import com.hou.gradproj.docmanagesys.util.FileUtil;
 import com.hou.gradproj.docmanagesys.util.ValidateUtil;
 import lombok.SneakyThrows;

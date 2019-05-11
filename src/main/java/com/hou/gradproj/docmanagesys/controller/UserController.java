@@ -1,9 +1,6 @@
 package com.hou.gradproj.docmanagesys.controller;
 
-import com.hou.gradproj.docmanagesys.exception.ResourceNotFoundException;
-import com.hou.gradproj.docmanagesys.model.User;
 import com.hou.gradproj.docmanagesys.payload.UserIdentityAvailability;
-import com.hou.gradproj.docmanagesys.payload.UserProfile;
 import com.hou.gradproj.docmanagesys.payload.UserSummary;
 import com.hou.gradproj.docmanagesys.repository.UserRepository;
 import com.hou.gradproj.docmanagesys.security.CurrentUser;

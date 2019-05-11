@@ -35,8 +35,6 @@ app:
   jwtExpirationInMs: 604800000
   save_file_path: /file_storage/ #TODO this need to be changed to path in ubuntu server
   resource-handler: /resource/**
-  #preview-path: /root/demo/ #TODO this need to be ensure the preview path of ubuntu server
-  #preview-server: http://39.96.211.100:8012/demo/ #TODO this need to be ensure the preview server 8012 of ubuntu server
 
 server:
   port: 9090

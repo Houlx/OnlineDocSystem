@@ -1,12 +1,10 @@
 package com.hou.gradproj.docmanagesys.service.Impl;
 
-import com.hou.gradproj.docmanagesys.exception.BadRequestException;
 import com.hou.gradproj.docmanagesys.exception.ResourceNotFoundException;
 import com.hou.gradproj.docmanagesys.model.User;
 import com.hou.gradproj.docmanagesys.repository.FileRepository;
 import com.hou.gradproj.docmanagesys.repository.UserRepository;
 import com.hou.gradproj.docmanagesys.service.AdminService;
-import com.hou.gradproj.docmanagesys.util.AppConstants;
 import com.hou.gradproj.docmanagesys.util.ValidateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
