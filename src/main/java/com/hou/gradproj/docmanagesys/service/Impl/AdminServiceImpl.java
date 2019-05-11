@@ -7,6 +7,7 @@ import com.hou.gradproj.docmanagesys.repository.FileRepository;
 import com.hou.gradproj.docmanagesys.repository.UserRepository;
 import com.hou.gradproj.docmanagesys.service.AdminService;
 import com.hou.gradproj.docmanagesys.util.AppConstants;
+import com.hou.gradproj.docmanagesys.util.ValidateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +34,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public Page<User> getUsers(int page, int size) {
-        validatePageNumberAndSize(page, size);
+        ValidateUtil.validatePageNumberAndSize(page, size);
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "name");
         return userRepository.findAll(pageable);
     }
@@ -54,15 +55,5 @@ public class AdminServiceImpl implements AdminService {
         user.setStorageRoom(storageRoom);
         userRepository.save(user);
         return true;
-    }
-
-    private void validatePageNumberAndSize(int page, int size) {
-        if (page < 0) {
-            throw new BadRequestException("Page number cannot be less than zero.");
-        }
-
-        if (size > AppConstants.MAX_PAGE_SIZE) {
-            throw new BadRequestException("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
-        }
     }
 }

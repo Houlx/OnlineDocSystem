@@ -13,6 +13,7 @@ import com.hou.gradproj.docmanagesys.security.UserPrincipal;
 import com.hou.gradproj.docmanagesys.service.FileService;
 import com.hou.gradproj.docmanagesys.util.AppConstants;
 import com.hou.gradproj.docmanagesys.util.FileUtil;
+import com.hou.gradproj.docmanagesys.util.ValidateUtil;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional
     public Page<File> getFiles(UserPrincipal currentUser, int page, int size, Long typeId) {
-        validatePageNumberAndSize(page, size);
+        ValidateUtil.validatePageNumberAndSize(page, size);
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "name");
 
@@ -194,23 +195,6 @@ public class FileServiceImpl implements FileService {
             return true;
         } else {
             return false;
-        }
-    }
-
-    /**
-     * validate page number and size, page number cannot be less than 0, size number cannot be more
-     * than max page size defined in AppConstants
-     *
-     * @param page page number
-     * @param size size number
-     */
-    private void validatePageNumberAndSize(int page, int size) {
-        if (page < 0) {
-            throw new BadRequestException("Page number cannot be less than zero.");
-        }
-
-        if (size > AppConstants.MAX_PAGE_SIZE) {
-            throw new BadRequestException("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
         }
     }
 }
