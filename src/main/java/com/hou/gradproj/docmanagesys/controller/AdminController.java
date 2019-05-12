@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/admin/users")
 public class AdminController {
 
     private final UserRepository userRepository;
@@ -56,7 +56,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/users/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<?> modifyStorageRoom(@PathVariable Long id, @RequestParam(value = "room") int gigaByte) {
         long bytes = gigaByte * 1024 * 1024 * 1024;
         if (adminService.modifyStorageRoom(id, BigInteger.valueOf(bytes))) {
