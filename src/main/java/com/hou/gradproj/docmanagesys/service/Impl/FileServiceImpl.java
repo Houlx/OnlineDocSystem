@@ -116,11 +116,11 @@ public class FileServiceImpl implements FileService {
             file.setSize(size);
             file.setType(type);
             file.setPath(dirPath);
-            fileRepository.save(file);
+            File result = fileRepository.save(file);
 
             user.setAlreadyUsedRoom(user.getAlreadyUsedRoom().add(size));
             userRepository.save(user);
-            return file;
+            return result;
         } else {
             throw new FileException("File already exists");
         }
