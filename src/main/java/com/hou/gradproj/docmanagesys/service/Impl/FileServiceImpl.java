@@ -185,10 +185,12 @@ public class FileServiceImpl implements FileService {
     public boolean rename(Long id, String newName) {
         File target = fileRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("File", "id", id));
 
+        String ext = target.getName().substring(target.getName().lastIndexOf(".")).toLowerCase();
+
         java.io.File oldFile = new java.io.File(target.getPath() + "/" + target.getName());
-        java.io.File newFile = new java.io.File(target.getPath() + "/" + newName);
+        java.io.File newFile = new java.io.File(target.getPath() + "/" + newName + ext);
         if (oldFile.renameTo(newFile)) {
-            target.setName(newName);
+            target.setName(newName + ext);
             fileRepository.save(target);
             return true;
         } else {
