@@ -61,10 +61,8 @@ public class User extends DateAudit {
     @Size(max = 100)
     private String password;
 
-    @NotBlank
     private BigInteger storageRoom;
 
-    @NotBlank
     private BigInteger alreadyUsedRoom;
 
     @ManyToMany(fetch = FetchType.LAZY)

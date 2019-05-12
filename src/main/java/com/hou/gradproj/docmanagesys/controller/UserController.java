@@ -1,12 +1,15 @@
 package com.hou.gradproj.docmanagesys.controller;
 
+import com.hou.gradproj.docmanagesys.exception.ResourceNotFoundException;
 import com.hou.gradproj.docmanagesys.model.User;
 import com.hou.gradproj.docmanagesys.payload.UserIdentityAvailability;
+import com.hou.gradproj.docmanagesys.payload.UserProfile;
 import com.hou.gradproj.docmanagesys.payload.UserSummary;
 import com.hou.gradproj.docmanagesys.repository.UserRepository;
 import com.hou.gradproj.docmanagesys.security.CurrentUser;
 import com.hou.gradproj.docmanagesys.security.UserPrincipal;
 import com.hou.gradproj.docmanagesys.service.UserService;
+import com.hou.gradproj.docmanagesys.util.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +50,8 @@ public class UserController {
         return new UserIdentityAvailability(isAvailable);
     }
 
-    @PostMapping("/me/{newName}")
-    public UserSummary changeName(@CurrentUser UserPrincipal currentUser, @PathVariable String newName) {
+    @PostMapping("/me")
+    public UserSummary changeName(@CurrentUser UserPrincipal currentUser, @RequestParam("newName") String newName) {
         User user = userService.changeName(currentUser, newName);
         return new UserSummary(user.getId(), user.getUsername(), user.getName(), user.getStorageRoom(), user.getAlreadyUsedRoom());
     }
@@ -59,4 +62,9 @@ public class UserController {
         return new UserSummary(user.getId(), user.getUsername(), user.getName(), user.getStorageRoom(), user.getAlreadyUsedRoom());
     }
 
+    @GetMapping("/me/profile")
+    public UserProfile getProfile(@CurrentUser UserPrincipal currentUser) {
+        User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "id", currentUser.getId()));
+        return ModelMapper.mapUserToUserProfile(user);
+    }
 }

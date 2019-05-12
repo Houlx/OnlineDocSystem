@@ -101,16 +101,13 @@ public class FileServiceImpl implements FileService {
         User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "id", currentUser.getId()));
 
         java.io.File dest = new java.io.File(dirPath);
-        String path = null;
         if (!dest.exists()) {
-            if (dest.mkdirs()) {
-                path = dirPath + "/" + name;
-            }
+            dest.mkdirs();
         }
+        String path = dirPath + java.io.File.separator + name;
 
         if (!fileRepository.existsByNameAndCreatedBy(name, currentUser.getId())
-                && user.getAlreadyUsedRoom().add(size).compareTo(user.getStorageRoom()) < 0
-                && path != null) {
+                && user.getAlreadyUsedRoom().add(size).compareTo(user.getStorageRoom()) < 0) {
             multipartFile.transferTo(new java.io.File(path));
             file.setName(name);
             file.setSize(size);
@@ -122,7 +119,13 @@ public class FileServiceImpl implements FileService {
             userRepository.save(user);
             return result;
         } else {
-            throw new FileException("File already exists");
+            if (fileRepository.existsByNameAndCreatedBy(name, currentUser.getId())) {
+                throw new FileException("File already exists");
+            } else if (user.getAlreadyUsedRoom().add(size).compareTo(user.getStorageRoom()) > 0) {
+                throw new FileException("Storage full");
+            } else {
+                throw new FileException("Internal Error");
+            }
         }
     }
 
