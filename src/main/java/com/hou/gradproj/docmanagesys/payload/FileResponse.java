@@ -15,7 +15,6 @@ public class FileResponse {
     private Long type;
     private int size;
     private String path;
-//    private UserSummary createdBy;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

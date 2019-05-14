@@ -5,9 +5,21 @@ import com.hou.gradproj.docmanagesys.model.User;
 import com.hou.gradproj.docmanagesys.payload.FileResponse;
 import com.hou.gradproj.docmanagesys.payload.UserProfile;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
+
 public class ModelMapper {
 
+    private static DateTimeFormatter formatter = DateTimeFormatter
+            .ofLocalizedDateTime(FormatStyle.MEDIUM)
+            .withLocale(Locale.CHINA)
+            .withZone(ZoneId.systemDefault());
+
     public static FileResponse mapFileToFileResponse(File file) {
+
+
         FileResponse response = new FileResponse();
 
         response.setId(file.getId());
@@ -15,8 +27,8 @@ public class ModelMapper {
         response.setPath(file.getPath());
         response.setSize(file.getSize().intValue());
         response.setType(file.getType().getId());
-        response.setCreatedAt(file.getCreatedAt());
-        response.setUpdatedAt(file.getUpdatedAt());
+        response.setCreatedAt(formatter.format(file.getCreatedAt()));
+        response.setUpdatedAt(formatter.format(file.getUpdatedAt()));
 
         return response;
     }
@@ -28,7 +40,7 @@ public class ModelMapper {
                 user.getName(),
                 user.getStorageRoom(),
                 user.getAlreadyUsedRoom(),
-                user.getCreatedAt()
+                formatter.format(user.getCreatedAt())
         );
     }
 }

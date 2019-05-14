@@ -69,7 +69,7 @@ public class FileServiceImpl implements FileService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "name");
 
-        if (typeId == 0L) {
+        if (typeId == 0) {
             return fileRepository.findByCreatedBy(currentUser.getId(), pageable);
         }
 

@@ -16,5 +16,6 @@ public class UserProfile {
     private String name;
     private BigInteger storageRoom;
     private BigInteger alreadyUsedRoom;
-    private Instant joinedAt;
+//    private Instant joinedAt;
+    private String joinedAt;
 }
