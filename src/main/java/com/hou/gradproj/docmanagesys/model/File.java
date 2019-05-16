@@ -22,7 +22,6 @@ public class File extends UserDateAudit {
     @Size(max = 140)
     private String name;
 
-//    @NotBlank
     private BigInteger size;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
