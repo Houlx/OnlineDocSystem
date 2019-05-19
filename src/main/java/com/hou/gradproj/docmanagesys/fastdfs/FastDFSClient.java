@@ -26,7 +26,7 @@ public class FastDFSClient {
     }
 
     //return file resource url
-    public String uploadFile(MultipartFile multipartFile, String username) throws IOException {
+    public static String uploadFile(MultipartFile multipartFile, String username) throws IOException {
         String[] fileAbsolutePath = {};
         String fileName = multipartFile.getOriginalFilename();
         String ext = null;
