@@ -9,8 +9,6 @@ services:
       - MYSQL_PASSWORD=123456
     ports:
       - 3306:3306
-#    volumes:
-#      - /root/spring_boot/sqlscript:/docker-entrypoint-initdb.d
 
   docker-docsys:
     build:

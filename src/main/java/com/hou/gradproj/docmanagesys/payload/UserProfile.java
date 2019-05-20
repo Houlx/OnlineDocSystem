@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigInteger;
-import java.time.Instant;
 
 @AllArgsConstructor
 @Getter
@@ -16,6 +15,5 @@ public class UserProfile {
     private String name;
     private BigInteger storageRoom;
     private BigInteger alreadyUsedRoom;
-//    private Instant joinedAt;
     private String joinedAt;
 }

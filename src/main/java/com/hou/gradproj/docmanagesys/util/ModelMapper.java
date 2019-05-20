@@ -24,12 +24,12 @@ public class ModelMapper {
 
         response.setId(file.getId());
         response.setName(file.getName());
-        response.setPath(file.getPath());
         response.setSize(file.getSize().intValue());
         response.setType(file.getType().getId());
         response.setCreatedAt(formatter.format(file.getCreatedAt()));
         response.setUpdatedAt(formatter.format(file.getUpdatedAt()));
-
+        response.setGroupName(file.getGroupName());
+        response.setRemoteFileName(file.getRemoteFileName());
         return response;
     }
 

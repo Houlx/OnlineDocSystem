@@ -18,6 +18,8 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
     Page<File> findByCreatedBy(Long id, Pageable pageable);
 
+    List<File> findByCreatedBy(Long id);
+
     List<File> findByIdIn(List<Long> ids);
 
     boolean existsByNameAndCreatedBy(String name, Long id);

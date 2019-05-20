@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +13,8 @@ public class FileResponse {
     private String name;
     private Long type;
     private int size;
-    private String path;
     private String createdAt;
     private String updatedAt;
+    private String groupName;
+    private String remoteFileName;
 }

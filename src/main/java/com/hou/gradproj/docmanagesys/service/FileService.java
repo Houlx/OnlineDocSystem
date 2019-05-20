@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public interface FileService {
 
@@ -16,7 +17,7 @@ public interface FileService {
 
     File deleteFile(Long fileId);
 
-    Resource loadFileAsResource(Long fileId);
+    InputStream downloadFile(Long fileId);
 
     boolean rename(Long fileId, String newName);
 }

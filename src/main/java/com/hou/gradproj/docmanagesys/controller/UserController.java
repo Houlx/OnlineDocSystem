@@ -10,20 +10,18 @@ import com.hou.gradproj.docmanagesys.security.CurrentUser;
 import com.hou.gradproj.docmanagesys.security.UserPrincipal;
 import com.hou.gradproj.docmanagesys.service.UserService;
 import com.hou.gradproj.docmanagesys.util.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
     private final UserRepository userRepository;
 
     private final UserService userService;
-
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(UserRepository userRepository, UserService userService) {
@@ -34,7 +32,7 @@ public class UserController {
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        logger.info(currentUser.toString());
+        log.info(currentUser.toString());
         return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName(), currentUser.getStorageRoom(), currentUser.getAlreadyUsedRoom());
     }
 

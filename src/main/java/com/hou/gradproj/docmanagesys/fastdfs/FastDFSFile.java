@@ -12,7 +12,7 @@ public class FastDFSFile {
     private String md5;
     private String author;
 
-    public FastDFSFile(String name, byte[] content, String ext, String author) {
+    FastDFSFile(String name, byte[] content, String ext, String author) {
         super();
         this.name = name;
         this.content = content;

@@ -1,11 +1,11 @@
 package com.hou.gradproj.docmanagesys.fastdfs;
 
 import lombok.Cleanup;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,8 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Slf4j
 public class FastDFSClient {
-    private static Logger logger = LoggerFactory.getLogger(FastDFSClient.class);
 
     static {
         try {
@@ -25,9 +25,9 @@ public class FastDFSClient {
         }
     }
 
-    //return file resource url
-    public static String uploadFile(MultipartFile multipartFile, String username) throws IOException {
-        String[] fileAbsolutePath = {};
+    //return [groupName, remoteFileName]
+    public static String[] uploadFile(MultipartFile multipartFile, String username) throws IOException {
+        String[] fileAbsolutePath;
         String fileName = multipartFile.getOriginalFilename();
         String ext = null;
         if (fileName != null) {
@@ -45,41 +45,26 @@ public class FastDFSClient {
         }
         FastDFSFile file = new FastDFSFile(fileName, file_buff, ext, username);
 
-        try {
-            fileAbsolutePath = FastDFSClient.upload(file);  //upload to fastdfs
-        } catch (Exception e) {
-            logger.error("upload file Exception!", e);
-        }
+        fileAbsolutePath = FastDFSClient.upload(file);  //upload to fastdfs
+
         if (fileAbsolutePath == null) {
-            logger.error("upload file failed,please upload again!");
+            log.error("upload file failed,please upload again!");
             throw new NullPointerException("file absolute path is null.");
         }
-        return FastDFSClient.getTrackerUrl() + fileAbsolutePath[0] + "/" + fileAbsolutePath[1];
+        return fileAbsolutePath;
     }
 
+    @SneakyThrows({IOException.class, MyException.class})
     public static FileInfo getFile(String groupName, String remoteFileName) {
-        try {
-            StorageClient storageClient = getTrackerClient();
-            return storageClient.get_file_info(groupName, remoteFileName);
-        } catch (IOException e) {
-            logger.error("IO Exception: Get File from Fast DFS failed", e);
-        } catch (Exception e) {
-            logger.error("Non IO Exception: Get File from Fast DFS failed", e);
-        }
-        return null;
+        StorageClient storageClient = getTrackerClient();
+        return storageClient.get_file_info(groupName, remoteFileName);
     }
 
+    @SneakyThrows({IOException.class, MyException.class})
     public static InputStream downFile(String groupName, String remoteFileName) {
-        try {
-            StorageClient storageClient = getTrackerClient();
-            byte[] fileByte = storageClient.download_file(groupName, remoteFileName);
-            return new ByteArrayInputStream(fileByte);
-        } catch (IOException e) {
-            logger.error("IO Exception: Get File from Fast DFS failed", e);
-        } catch (Exception e) {
-            logger.error("Non IO Exception: Get File from Fast DFS failed", e);
-        }
-        return null;
+        StorageClient storageClient = getTrackerClient();
+        byte[] fileByte = storageClient.download_file(groupName, remoteFileName);
+        return new ByteArrayInputStream(fileByte);
     }
 
     //return 0 for success, non-zero for fail
@@ -87,7 +72,6 @@ public class FastDFSClient {
             throws Exception {
         StorageClient storageClient = getTrackerClient();
         return storageClient.delete_file(groupName, remoteFileName);
-//        logger.info("delete file successfully!!!" + i);
     }
 
     public static StorageServer[] getStoreStorages(String groupName)
@@ -109,27 +93,22 @@ public class FastDFSClient {
     }
 
     //return [groupName, remoteFileName]: String[]
+    @SneakyThrows({IOException.class, MyException.class})
     private static String[] upload(FastDFSFile file) {
-        logger.info("File Name: " + file.getName() + "File Length:" + file.getContent().length);
+        log.info("File Name: " + file.getName() + "File Length:" + file.getContent().length);
 
         NameValuePair[] meta_list = new NameValuePair[1];
         meta_list[0] = new NameValuePair("author", file.getAuthor());
 
         long startTime = System.currentTimeMillis();
-        String[] uploadResults = null;
-        StorageClient storageClient = null;
-        try {
-            storageClient = getTrackerClient();
-            uploadResults = storageClient.upload_file(file.getContent(), file.getExt(), meta_list);
-        } catch (IOException e) {
-            logger.error("IO Exception when uploading the file:" + file.getName(), e);
-        } catch (Exception e) {
-            logger.error("Non IO Exception when uploading the file:" + file.getName(), e);
-        }
-        logger.info("upload_file time used:" + (System.currentTimeMillis() - startTime) + " ms");
 
-        if (uploadResults == null && storageClient != null) {
-            logger.error("upload file fail, error code:" + storageClient.getErrorCode());
+        StorageClient storageClient = getTrackerClient();
+        String[] uploadResults = storageClient.upload_file(file.getContent(), file.getExt(), meta_list);
+
+        log.info("upload_file time used:" + (System.currentTimeMillis() - startTime) + " ms");
+
+        if (uploadResults == null) {
+            log.error("upload file fail, error code:" + storageClient.getErrorCode());
         }
 
         return uploadResults;
