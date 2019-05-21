@@ -8,6 +8,7 @@ import com.hou.gradproj.docmanagesys.repository.FileRepository;
 import com.hou.gradproj.docmanagesys.repository.UserRepository;
 import com.hou.gradproj.docmanagesys.service.AdminService;
 import com.hou.gradproj.docmanagesys.util.ValidateUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.util.List;
 
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Transactional
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -27,12 +29,6 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
 
     private final FileRepository fileRepository;
-
-    @Autowired
-    public AdminServiceImpl(UserRepository userRepository, FileRepository fileRepository) {
-        this.userRepository = userRepository;
-        this.fileRepository = fileRepository;
-    }
 
     @Override
     public Page<User> getUsers(int page, int size) {

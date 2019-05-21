@@ -10,24 +10,20 @@ import com.hou.gradproj.docmanagesys.security.CurrentUser;
 import com.hou.gradproj.docmanagesys.security.UserPrincipal;
 import com.hou.gradproj.docmanagesys.service.UserService;
 import com.hou.gradproj.docmanagesys.util.ModelMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
     private final UserRepository userRepository;
 
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
-        this.userService = userService;
-    }
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")

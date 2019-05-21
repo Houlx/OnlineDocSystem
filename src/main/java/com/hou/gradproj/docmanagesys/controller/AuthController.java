@@ -11,6 +11,7 @@ import com.hou.gradproj.docmanagesys.payload.SignUpRequest;
 import com.hou.gradproj.docmanagesys.repository.RoleRepository;
 import com.hou.gradproj.docmanagesys.repository.UserRepository;
 import com.hou.gradproj.docmanagesys.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import java.util.Collections;
 
 import static com.hou.gradproj.docmanagesys.util.AppConstants.DEFAULT_STORAGE_ROOM;
 
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -49,15 +51,6 @@ public class AuthController {
 
     private final
     JwtTokenProvider tokenProvider;
-
-    @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.tokenProvider = tokenProvider;
-    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {

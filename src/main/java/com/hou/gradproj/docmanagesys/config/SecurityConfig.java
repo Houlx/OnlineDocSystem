@@ -3,6 +3,7 @@ package com.hou.gradproj.docmanagesys.config;
 import com.hou.gradproj.docmanagesys.security.CustomUserDetailsService;
 import com.hou.gradproj.docmanagesys.security.JwtAuthenticationEntryPoint;
 import com.hou.gradproj.docmanagesys.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,17 +21,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomUserDetailsService customUserDetailsService;
 
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
-
-    @Autowired
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint unauthorizedHandler) {
-        this.customUserDetailsService = customUserDetailsService;
-        this.unauthorizedHandler = unauthorizedHandler;
-    }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {

@@ -12,6 +12,7 @@ import com.hou.gradproj.docmanagesys.service.FileService;
 import com.hou.gradproj.docmanagesys.util.AppConstants;
 import com.hou.gradproj.docmanagesys.util.ModelMapper;
 import lombok.Cleanup;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @RestController
 @RequestMapping("/api/files")
 public class FileController {
@@ -36,12 +38,6 @@ public class FileController {
     private final FileService fileService;
 
     private final FileRepository fileRepository;
-
-    @Autowired
-    public FileController(FileService fileService, FileRepository fileRepository) {
-        this.fileService = fileService;
-        this.fileRepository = fileRepository;
-    }
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")

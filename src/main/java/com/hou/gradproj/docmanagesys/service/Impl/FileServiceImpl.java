@@ -13,6 +13,7 @@ import com.hou.gradproj.docmanagesys.security.UserPrincipal;
 import com.hou.gradproj.docmanagesys.service.FileService;
 import com.hou.gradproj.docmanagesys.util.FileUtil;
 import com.hou.gradproj.docmanagesys.util.ValidateUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Transactional
 @Service
 public class FileServiceImpl implements FileService {
@@ -37,13 +39,6 @@ public class FileServiceImpl implements FileService {
     private final UserRepository userRepository;
 
     private final FileTypeRepository fileTypeRepository;
-
-    @Autowired
-    public FileServiceImpl(FileRepository fileRepository, UserRepository userRepository, FileTypeRepository fileTypeRepository) {
-        this.fileRepository = fileRepository;
-        this.userRepository = userRepository;
-        this.fileTypeRepository = fileTypeRepository;
-    }
 
     /**
      * get files owned by one user by typeId, default is 0(all files)

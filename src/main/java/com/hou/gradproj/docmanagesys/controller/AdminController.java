@@ -9,6 +9,7 @@ import com.hou.gradproj.docmanagesys.repository.UserRepository;
 import com.hou.gradproj.docmanagesys.service.AdminService;
 import com.hou.gradproj.docmanagesys.util.AppConstants;
 import com.hou.gradproj.docmanagesys.util.ModelMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @RestController
 @RequestMapping("/api/admin/users")
 public class AdminController {
@@ -26,12 +28,6 @@ public class AdminController {
     private final UserRepository userRepository;
 
     private final AdminService adminService;
-
-    @Autowired
-    public AdminController(UserRepository userRepository, AdminService adminService) {
-        this.userRepository = userRepository;
-        this.adminService = adminService;
-    }
 
     @GetMapping
     public PagedResponse<UserProfile> getAllUsers(@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
