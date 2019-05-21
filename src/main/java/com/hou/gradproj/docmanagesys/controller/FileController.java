@@ -3,7 +3,6 @@ package com.hou.gradproj.docmanagesys.controller;
 import com.hou.gradproj.docmanagesys.exception.BadRequestException;
 import com.hou.gradproj.docmanagesys.exception.ResourceNotFoundException;
 import com.hou.gradproj.docmanagesys.model.File;
-import com.hou.gradproj.docmanagesys.payload.ApiResponse;
 import com.hou.gradproj.docmanagesys.payload.FileResponse;
 import com.hou.gradproj.docmanagesys.payload.PagedResponse;
 import com.hou.gradproj.docmanagesys.repository.FileRepository;
@@ -18,8 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -115,10 +112,7 @@ public class FileController {
 
     @PostMapping("/{fileId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> rename(@PathVariable Long fileId, @RequestParam("newName") String newName) {
-        if (fileService.rename(fileId, newName)) {
-            return ResponseEntity.ok(new ApiResponse(true, "Renamed successfully"));
-        }
-        return new ResponseEntity<>(new ApiResponse(false, "Rename failed"), HttpStatus.INTERNAL_SERVER_ERROR);
+    public FileResponse rename(@PathVariable Long fileId, @RequestParam("newName") String newName) {
+        return ModelMapper.mapFileToFileResponse(fileService.rename(fileId, newName));
     }
 }

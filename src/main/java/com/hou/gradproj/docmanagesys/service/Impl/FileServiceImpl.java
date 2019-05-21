@@ -179,13 +179,13 @@ public class FileServiceImpl implements FileService {
      * @return true if rename successfully, otherwise false
      */
     @Override
-    public boolean rename(Long id, String newName) {
+    public File rename(Long id, String newName) {
         File target = fileRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("File", "id", id));
 
         String ext = target.getName().substring(target.getName().lastIndexOf("."));
 
         target.setName(newName + ext);
         fileRepository.save(target);
-        return true;
+        return target;
     }
 }

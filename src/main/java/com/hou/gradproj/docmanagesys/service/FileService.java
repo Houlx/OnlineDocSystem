@@ -2,7 +2,6 @@ package com.hou.gradproj.docmanagesys.service;
 
 import com.hou.gradproj.docmanagesys.model.File;
 import com.hou.gradproj.docmanagesys.security.UserPrincipal;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,5 +18,5 @@ public interface FileService {
 
     InputStream downloadFile(Long fileId);
 
-    boolean rename(Long fileId, String newName);
+    File rename(Long fileId, String newName);
 }
