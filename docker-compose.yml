@@ -3,6 +3,7 @@ version: '2'
 services:
   docker-mysql:
     image: mysql:latest
+    network_mode: "host"
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=docmanagesys
@@ -17,11 +18,10 @@ services:
       - docker-mysql
     ports:
       - 9090:9090
+    network_mode: "host"
     environment:
       - DATABASE_HOST=docker-mysql
       - DATABASE_USER=root
       - DATABASE_PASSWORD=123456
       - DATABASE_NAME=docmanagesys
       - DATABASE_PORT=3306
-    volumes:
-      - /root/spring_boot/file_storage:/file_storage

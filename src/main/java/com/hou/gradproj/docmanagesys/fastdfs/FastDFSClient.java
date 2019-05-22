@@ -25,6 +25,10 @@ public class FastDFSClient {
         }
     }
 
+    public static void main(String[] args) {
+        log.warn(ClientGlobal.g_secret_key);
+    }
+
     //return [groupName, remoteFileName]
     public static String[] uploadFile(MultipartFile multipartFile, String username) throws IOException {
         String[] fileAbsolutePath;

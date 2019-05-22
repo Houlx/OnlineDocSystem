@@ -10,12 +10,14 @@ import com.hou.gradproj.docmanagesys.security.CurrentUser;
 import com.hou.gradproj.docmanagesys.security.UserPrincipal;
 import com.hou.gradproj.docmanagesys.service.FileService;
 import com.hou.gradproj.docmanagesys.util.AppConstants;
+import com.hou.gradproj.docmanagesys.util.FileUtil;
 import com.hou.gradproj.docmanagesys.util.ModelMapper;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.csource.fastdfs.ClientGlobal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -110,5 +112,10 @@ public class FileController {
     @PreAuthorize("hasRole('USER')")
     public FileResponse rename(@PathVariable Long fileId, @RequestParam("newName") String newName) {
         return ModelMapper.mapFileToFileResponse(fileService.rename(fileId, newName));
+    }
+
+    @GetMapping("/preview")
+    public String getFileToken(@RequestParam("remoteFileName") String remoteFileName) {
+        return FileUtil.getToken(remoteFileName, ClientGlobal.getG_secret_key());
     }
 }
