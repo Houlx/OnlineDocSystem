@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.*;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -18,15 +17,10 @@ public class FastDFSClient {
 
     static {
         try {
-            String filePath = new ClassPathResource("config/fastdfs_conf.properties").getFile().getAbsolutePath();
-            ClientGlobal.initByProperties(filePath);
+            ClientGlobal.initByProperties("config/fastdfs_conf.properties");
         } catch (IOException | MyException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        log.warn(ClientGlobal.g_secret_key);
     }
 
     //return [groupName, remoteFileName]
