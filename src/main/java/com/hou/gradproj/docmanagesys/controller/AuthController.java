@@ -11,6 +11,7 @@ import com.hou.gradproj.docmanagesys.payload.SignUpRequest;
 import com.hou.gradproj.docmanagesys.repository.RoleRepository;
 import com.hou.gradproj.docmanagesys.repository.UserRepository;
 import com.hou.gradproj.docmanagesys.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.Collections;
 
+import static com.hou.gradproj.docmanagesys.util.AppConstants.DEFAULT_STORAGE_ROOM;
+
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -46,15 +51,6 @@ public class AuthController {
 
     private final
     JwtTokenProvider tokenProvider;
-
-    @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.tokenProvider = tokenProvider;
-    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -80,7 +76,7 @@ public class AuthController {
             return new ResponseEntity<>(new ApiResponse(false, "Email is already in use!"), HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword());
+        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword(), DEFAULT_STORAGE_ROOM, BigInteger.valueOf(0));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set."));
@@ -88,7 +84,7 @@ public class AuthController {
 
         User result = userRepository.save(user);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/users/{username}").buildAndExpand(result.getUsername()).toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/admin/users/{username}").buildAndExpand(result.getUsername()).toUri();
 
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered Successfully"));
     }

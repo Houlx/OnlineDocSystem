@@ -1,6 +1,10 @@
 package com.hou.gradproj.docmanagesys.util;
 
+import lombok.SneakyThrows;
+import org.csource.fastdfs.ProtoCommon;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.Instant;
 
 public class FileUtil {
     public static Long getTypeOfUploadedFile(MultipartFile file) {
@@ -26,5 +30,15 @@ public class FileUtil {
             }
         }
         return null;
+    }
+
+    @SneakyThrows
+    public static String getToken(String remoteFileName, String httpSecretKey) {
+        int ts = (int) Instant.now().getEpochSecond();
+
+        String token = ProtoCommon.getToken(remoteFileName, ts, httpSecretKey);
+
+        return "token=" + token +
+                "&ts=" + ts;
     }
 }

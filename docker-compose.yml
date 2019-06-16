@@ -2,6 +2,7 @@ version: '2'
 
 services:
   docker-mysql:
+    container_name: docker-mysql
     image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=123456
@@ -9,10 +10,9 @@ services:
       - MYSQL_PASSWORD=123456
     ports:
       - 3306:3306
-#    volumes:
-#      - /root/spring_boot/sqlscript:/docker-entrypoint-initdb.d
 
   docker-docsys:
+    container_name: docker-docsys
     build:
       context: .
     depends_on:
@@ -26,4 +26,4 @@ services:
       - DATABASE_NAME=docmanagesys
       - DATABASE_PORT=3306
     volumes:
-      - /root/spring_boot/file_storage:/file_storage
+      - /root/spring_boot/config:/config
